@@ -1,7 +1,13 @@
 import "./App.scss";
 
+import { Navbar } from "./components";
+
 const App = () => {
-  return <div>App</div>;
+  return (
+    <>
+      <Navbar />
+    </>
+  );
 };
 
 export default App;
