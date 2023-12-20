@@ -8,4 +8,16 @@
   img {
     width: 150px;
   }
+
+  &__btnWrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    :nth-child(2) {
+      background-color: #fff;
+      color: rgba(93, 55, 243, 1);
+      border: 1px solid rgba(93, 55, 243, 1);
+    }
+  }
 }

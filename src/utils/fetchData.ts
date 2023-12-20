@@ -17,3 +17,17 @@ export const fetchData = async (url: string, header?: IFetchData) => {
 
   return data;
 };
+
+export const fetchWithToken = async (url: string, method = "GET") => {
+  const token = await fetchData(
+    "https://api.blog.redberryinternship.ge/api/token"
+  );
+
+  return fetchData(url, {
+    method,
+    headers: {
+      Authorization: `Bearer ${token.token}`,
+      "Content-Type": "application/json",
+    },
+  });
+};
