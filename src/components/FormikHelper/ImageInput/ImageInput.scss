@@ -1,0 +1,70 @@
+.imgWrapper {
+  width: 100%;
+  height: 250px;
+
+  &__imageLabel {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+
+  &__inputWrapper {
+    height: 100%;
+    background-color: rgba(244, 243, 255, 1);
+    border: 2px dashed #4386a9;
+    border-radius: 18px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+
+    svg {
+      font-size: 40px;
+      color: #5d37f3;
+    }
+
+    p {
+      cursor: pointer;
+    }
+  }
+
+  input {
+    display: none;
+  }
+}
+
+.addedImg {
+  width: 100%;
+  padding: 15px;
+
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  background-color: rgba(242, 242, 250, 1);
+  border-radius: 24px;
+  font-size: 16px;
+  position: relative;
+
+  svg {
+    width: 24px;
+    height: 24px;
+    color: rgb(145, 145, 145);
+  }
+
+  button {
+    position: absolute;
+    right: 20px;
+
+    border: none;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    svg {
+      color: rgba(26, 26, 31, 1);
+    }
+  }
+}

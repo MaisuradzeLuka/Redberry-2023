@@ -1,15 +1,9 @@
+import { Button } from "../";
+import { IUserLogin } from "../../types";
+import { Link } from "react-router-dom";
 import logo from "../../assets/LOGO.png";
 
-import { Button } from "../";
-
 import "./Navbar.scss";
-import { Link } from "react-router-dom";
-
-interface IUserLogin {
-  loggedIn: boolean;
-  handleShowModal: () => void;
-  handleLoggedChange: () => void;
-}
 
 const Navbar = ({
   loggedIn,
@@ -27,9 +21,15 @@ const Navbar = ({
             <Link to="addBlog">
               <Button type="button">დაამატე ბლოგი</Button>
             </Link>
-            <Button type="button" onClick={handleLoggedChange}>
-              გამოსვლა
-            </Button>
+            <Link to="/">
+              <Button
+                type="button"
+                onClick={handleLoggedChange}
+                className="logout"
+              >
+                გამოსვლა
+              </Button>
+            </Link>
           </div>
         ) : (
           <Button type="button" onClick={handleShowModal}>

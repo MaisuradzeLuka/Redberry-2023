@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
 import blogBg from "../../assets/Blog-bg.png";
+import { useEffect, useState } from "react";
 import { fetchData, fetchWithToken } from "../../utils/fetchData";
-
+import { BlogCard } from "../../components";
+import { IBlog } from "../../types";
 import "./Home.scss";
 
 interface ICategories {
@@ -14,7 +15,7 @@ interface ICategories {
 const Home = () => {
   const [categories, setCategories] = useState<ICategories[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
-  const [blogs, setBlogs] = useState([]);
+  const [blogs, setBlogs] = useState<IBlog[]>([]);
 
   useEffect(() => {
     try {
@@ -79,7 +80,7 @@ const Home = () => {
         </ul>
         <div>
           {blogs.map((item) => (
-            <div>{item}</div>
+            <BlogCard key={item.id} {...item} />
           ))}
         </div>
       </section>

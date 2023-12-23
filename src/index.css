@@ -23,7 +23,7 @@ ol {
 /* Set core body defaults */
 body {
   line-height: 1.5;
-  font-family: var(--font-base);
+  font-family: "FiraGO", sans-serif;
 }
 
 /* Set shorter line heights on headings and interactive elements */

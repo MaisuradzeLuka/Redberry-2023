@@ -1,0 +1,49 @@
+.addBlog {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 50px;
+
+  max-width: 600px;
+
+  margin: 25px auto;
+
+  h2 {
+    font-size: 32px;
+    font-weight: bold;
+  }
+
+  &__inputWrapper {
+    display: flex;
+    gap: 26px;
+  }
+
+  &__submitBtn {
+    width: 50%;
+    align-self: flex-end;
+
+    &:disabled {
+      background-color: rgba(228, 227, 235, 1);
+      cursor: auto;
+    }
+  }
+
+  &__backBtn {
+    position: absolute;
+    top: 120px;
+    left: 76px;
+
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: rgba(228, 227, 235, 1);
+    color: #000;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+}
