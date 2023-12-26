@@ -2,7 +2,7 @@ export interface IInitialValues {
   author: string;
   title: string;
   desc: string;
-  releaseDate: Date | string;
+  releaseDate: Blob | string;
   categories: number[];
   email: string;
   image: { name: string; url: string };

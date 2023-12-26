@@ -1,17 +1,44 @@
-import { Field } from "formik";
-import "./Select.scss";
+import { useField } from "formik";
 import { useEffect, useState } from "react";
 import { fetchData } from "../../../utils/fetchData";
 import { ICategories } from "../../../types";
+import { IoIosArrowDown } from "react-icons/io";
+import "./Select.scss";
 
 interface ISelect {
-  id: string;
   name: string;
   label: string;
+  setFieldValue: (field: string, value: number[]) => void;
 }
 
-const Select = ({ id, name, label }: ISelect) => {
+const Select = ({ name, label, setFieldValue }: ISelect) => {
+  const [field] = useField(name);
+  const [showOptions, setShowOptions] = useState(false);
   const [categories, setCategories] = useState<ICategories[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<ICategories[]>(
+    []
+  );
+
+  const handleCategories = (category: ICategories) => {
+    const exists = selectedCategories.some(
+      (selectedCategory) => selectedCategory.id === category.id
+    );
+
+    if (!exists) {
+      setSelectedCategories((prevSelectedCategories) => [
+        ...prevSelectedCategories,
+        category,
+      ]);
+    }
+
+    if (!field.value.includes(category.id)) {
+      setFieldValue(name, [...field.value, category.id]);
+    }
+  };
+
+  const handleOptions = () => {
+    setShowOptions((prev) => !prev);
+  };
 
   useEffect(() => {
     try {
@@ -26,23 +53,51 @@ const Select = ({ id, name, label }: ISelect) => {
       throw new Error(`Something went wrong ${error}`);
     }
   }, []);
+
   return (
-    <div className="input">
-      <label htmlFor={id}>{label}</label>
-      <Field name={name} id={id} as="select">
-        {categories.map((item, index) => (
-          <option
-            value={index}
-            key={item.id}
-            style={{
-              backgroundColor: item.background_color,
-              color: item.text_color,
-            }}
-          >
-            {item.title}
-          </option>
-        ))}
-      </Field>
+    <div className="selectWrapper">
+      <h3>{label}</h3>
+      <div className="select" onClick={handleOptions}>
+        {selectedCategories.length === 0
+          ? "შეიყვნეთ სათაური"
+          : selectedCategories.map((item) => (
+              <div
+                key={`selected_category_${item.id}`}
+                style={{
+                  backgroundColor: item.background_color,
+                  color: item.text_color,
+                }}
+                className="select__category"
+              >
+                {item.title}
+              </div>
+            ))}
+        <div className="select__btnWrapper">
+          <IoIosArrowDown />
+        </div>
+      </div>
+      {showOptions && (
+        <div className="select__options">
+          {categories.map((item) => (
+            <label
+              key={item.id}
+              style={{
+                backgroundColor: item.background_color,
+                color: item.text_color,
+              }}
+              onClick={() => handleCategories(item)}
+            >
+              {item.title}
+              <input
+                name={name}
+                id={item.id.toString()}
+                type="radio"
+                value={item.id}
+              />
+            </label>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

@@ -1,21 +1,89 @@
-.input {
+.selectWrapper {
   display: flex;
   flex-direction: column;
   gap: 10px;
 
   width: 288px;
 
-  label {
+  position: relative;
+
+  h3 {
     font-weight: bold;
     font-size: 16px;
   }
 
-  select {
+  .select {
+    width: 100%;
     height: 44px;
+    border-radius: 12px;
+    padding: 0 10px;
+
+    border: 1px solid rgba(228, 227, 235, 1);
+    color: rgba(133, 133, 141, 1);
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+
+    font-size: 16px;
+    position: relative;
+
+    &__btnWrapper {
+      height: 100%;
+      position: absolute;
+      right: 0;
+      padding: 0 10px;
+      background-color: #fff;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      svg {
+        width: 25px;
+        height: 25px;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .select__options {
+    width: 100%;
+    height: 144px;
+
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    border: 1px solid rgba(228, 227, 235, 1);
     border-radius: 12px;
 
     padding: 10px;
-    outline: none;
-    border: 1px solid rgba(228, 227, 235, 1);
+
+    overflow-y: scroll;
+
+    position: absolute;
+    top: 75px;
+
+    input {
+      display: none;
+    }
+  }
+
+  .select__category,
+  label {
+    text-wrap: nowrap;
+    width: fit-content;
+    padding: 8px 12px;
+    border-radius: 30px;
+    font-weight: 400;
+    cursor: pointer;
+  }
+
+  .select__category {
+    font-size: 14px;
+    padding: 6px 10px;
   }
 }

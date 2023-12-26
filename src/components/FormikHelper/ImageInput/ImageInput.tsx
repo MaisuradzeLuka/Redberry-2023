@@ -1,6 +1,6 @@
 import { FaFolderPlus } from "react-icons/fa6";
 import { BsImage } from "react-icons/bs";
-import { IoMdClose } from "react-icons/io";
+import { IoIosInformationCircle, IoMdClose } from "react-icons/io";
 import { Field, FieldProps } from "formik";
 import "./ImageInput.scss";
 
@@ -59,6 +59,8 @@ const ImageInput = ({ name, label, id }: IImageInput) => {
     <>
       <Field name={name}>
         {(props: FieldProps) => {
+          const { meta, field } = props;
+
           if (props.field.value.url) {
             return (
               <div className="addedImg">
@@ -75,24 +77,41 @@ const ImageInput = ({ name, label, id }: IImageInput) => {
             );
           } else {
             return (
-              <div className="imgWrapper">
-                <label htmlFor="image" className="imgWrapper__imageLabel">
-                  {label}
-                </label>
-                {}
-                <label htmlFor={id} className="imgWrapper__inputWrapper">
-                  <FaFolderPlus />
-                  <p>ჩააგდეთ ფაილი აქ ან აირჩიეთ ფაილი</p>
-                  <input
-                    type="file"
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      fileSelectorHandler(e, props.form.setFieldValue)
-                    }
-                    accept="image/*"
-                    id={id}
-                  />
-                </label>
-              </div>
+              <>
+                <div className="imgWrapper">
+                  <label htmlFor="image" className="imgWrapper__imageLabel">
+                    {label}
+                  </label>
+                  {}
+                  <label
+                    htmlFor={id}
+                    className={`${
+                      meta.touched && meta.error
+                        ? "imgWrapper__inputWrapper invalid"
+                        : "imgWrapper__inputWrapper"
+                    }`}
+                  >
+                    <FaFolderPlus />
+                    <p>ჩააგდეთ ფაილი აქ ან აირჩიეთ ფაილი</p>
+                    <input
+                      type="file"
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        fileSelectorHandler(e, props.form.setFieldValue)
+                      }
+                      accept="image/*"
+                      id={id}
+                    />
+                  </label>
+                </div>
+                {meta.touched && meta.error && (
+                  <p>
+                    <span>
+                      <IoIosInformationCircle />
+                    </span>
+                    {"ფოტო აუცილებელია"}
+                  </p>
+                )}
+              </>
             );
           }
         }}

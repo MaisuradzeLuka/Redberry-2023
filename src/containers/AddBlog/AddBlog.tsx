@@ -1,9 +1,10 @@
 import { FaChevronLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { Formik } from "formik";
+import { Formik, Form, FormikHelpers } from "formik";
 import { Button, FormikHelper } from "../../components";
-// import { fetchData } from "../../utils/fetchData";
+import * as Yup from "yup";
 import { IInitialValues } from "../../types";
+import { postWithToken } from "../../utils/fetchData";
 import "./AddBlog.scss";
 
 const initialValues: IInitialValues = {
@@ -11,15 +12,40 @@ const initialValues: IInitialValues = {
   title: "",
   desc: "",
   releaseDate: "",
-  categories: [1, 2],
+  categories: [],
   email: "",
   image: { name: "", url: "" },
 };
 
 const AddBlog = () => {
-  const handleSubmit = () => {
-    // e.preventDefault();
-    // postBlog();
+  const validationSchema = Yup.object({
+    author: Yup.string().required("Skill is required field"),
+    releaseDate: Yup.date().required("გამოქვეყნების თარიღი სავალდებულოა"),
+    title: Yup.string().required().min(2),
+    desc: Yup.string().required().min(2),
+    image: Yup.mixed().required(),
+    email: Yup.string().test(
+      "is-valid-email",
+      "მეილი უნდა მთავრდებოდეს @redberry.ge-ით",
+      function (value) {
+        if (!value) {
+          return true;
+        }
+        return Yup.string()
+          .email()
+          .matches(/@redberry\.ge$/)
+          .isValidSync(value);
+      }
+    ),
+  });
+
+  const onSubmit = (
+    values: IInitialValues,
+    { resetForm }: FormikHelpers<IInitialValues>
+  ) => {
+    postBlog(values);
+
+    resetForm();
   };
 
   const postBlog = async (values: IInitialValues) => {
@@ -36,32 +62,27 @@ const AddBlog = () => {
     formData.append("email", values.email);
 
     try {
-      await fetch("https://api.blog.redberryinternship.ge/api/blogs", {
-        method: "POST",
-        headers: {
-          // "Content-Type": "multipart/form-data",
-          Accept: "application/json",
-          Authorization: `Bearer ee8383422d2845f39494dad39c16b758fc271dd640659c77e5bcc13ad277f09b`,
-        },
-        body: formData,
-      });
+      await postWithToken(
+        "https://api.blog.redberryinternship.ge/api/blogs",
+        formData
+      );
     } catch (error) {
       console.error("Could not create blog", error);
-      return false; // Blog creation failed
+      return false;
     }
   };
 
-  const handleClick = (img: string) => {
-    postBlog(img);
-  };
-
   return (
-    <Formik onSubmit={handleSubmit} initialValues={initialValues}>
+    <Formik
+      onSubmit={onSubmit}
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+    >
       {(props) => {
-        // console.log(props.values);
+        console.log(props.values);
 
         return (
-          <form className="addBlog">
+          <Form className="addBlog">
             <h2>ბლოგის დამატება</h2>
 
             <FormikHelper
@@ -85,6 +106,7 @@ const AddBlog = () => {
                 name="title"
                 label="სათაური*"
                 placeholder="შეიყვნეთ სათაური"
+                info={"მინიმუმ 2 სიმბოლო"}
               />
             </div>
 
@@ -94,6 +116,7 @@ const AddBlog = () => {
               id="desc"
               label="აღწერა*"
               placeholder="შეიყვნეთ აღწერა"
+              info={"მინიმუმ 2 სიმბოლო"}
             />
 
             <div className="addBlog__inputWrapper">
@@ -108,6 +131,7 @@ const AddBlog = () => {
                 id="categories"
                 name="categories"
                 label="კატეგორია"
+                setFieldValue={props.setFieldValue}
               />
             </div>
 
@@ -120,10 +144,9 @@ const AddBlog = () => {
             />
 
             <Button
-              type="button"
+              type="submit"
               className="addBlog__submitBtn"
               dissabled={false}
-              onClick={() => handleClick(props.values)}
             >
               ბლოგის დამატება
             </Button>
@@ -133,7 +156,7 @@ const AddBlog = () => {
                 <FaChevronLeft />
               </button>
             </Link>
-          </form>
+          </Form>
         );
       }}
     </Formik>

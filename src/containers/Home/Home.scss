@@ -1,7 +1,7 @@
 .home {
   background-color: rgba(243, 242, 250, 1);
   padding: 50px 75px;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .home__header {
@@ -47,5 +47,14 @@
       border: 1px solid black;
       border-radius: 30px;
     }
+  }
+
+  &__blogs {
+    margin-top: 50px;
+    width: 1288px;
+
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
   }
 }
