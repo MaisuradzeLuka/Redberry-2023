@@ -1,6 +1,7 @@
-import { Field, FieldProps } from "formik";
+import { Field, useField } from "formik";
 import { IoIosInformationCircle } from "react-icons/io";
 import "./Input.scss";
+import { useEffect } from "react";
 
 interface IDate {
   id: string;
@@ -11,13 +12,17 @@ interface IDate {
 }
 
 const Input = ({ id, name, label, placeholder, info }: IDate) => {
+  const [field, meta] = useField(name);
+
+  useEffect(() => {
+    sessionStorage.setItem(name, field.value);
+  }, [field.value, name]);
+
   return (
     <div className="input">
       <label htmlFor={id}>{label}</label>
       <Field name={name}>
-        {(props: FieldProps) => {
-          const { field, meta } = props;
-
+        {() => {
           return (
             <div
               className={`${

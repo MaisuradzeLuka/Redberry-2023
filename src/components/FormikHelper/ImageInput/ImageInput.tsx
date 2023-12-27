@@ -1,8 +1,9 @@
 import { FaFolderPlus } from "react-icons/fa6";
 import { BsImage } from "react-icons/bs";
 import { IoIosInformationCircle, IoMdClose } from "react-icons/io";
-import { Field, FieldProps } from "formik";
+import { Field, FieldProps, useField } from "formik";
 import "./ImageInput.scss";
+import { useEffect } from "react";
 
 interface IImageInput {
   name: string;
@@ -11,6 +12,12 @@ interface IImageInput {
 }
 
 const ImageInput = ({ name, label, id }: IImageInput) => {
+  const [field, meta] = useField(name);
+
+  useEffect(() => {
+    sessionStorage.setItem(name, JSON.stringify(field.value));
+  }, [field.value, name]);
+
   const fileSelectorHandler = (
     e: React.ChangeEvent<HTMLInputElement>,
     setFieldValue: (field: string, value: { name: string; url: string }) => void
@@ -22,31 +29,14 @@ const ImageInput = ({ name, label, id }: IImageInput) => {
       reader.readAsDataURL(imageData);
 
       reader.onload = () => {
-        const file = convertImageToBlob(reader.result as string);
+        // const file = convertImageToBlob(reader.result as string);
 
         setFieldValue("image", {
           name: imageData.name,
-          url: file as unknown as string,
+          url: reader.result as string,
         });
       };
     }
-  };
-
-  const convertImageToBlob = (image: string) => {
-    const blob = dataUrlToBlob(image);
-    const file = new File([blob], "myFileName", { type: "image/png" });
-    function dataUrlToBlob(image: string) {
-      const parts = image.split(";base64,");
-      const contentType = parts[0].split(":")[1];
-      const byteCharacters = atob(parts[1]);
-      const byteArrays = [];
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteArrays.push(byteCharacters.charCodeAt(i));
-      }
-      const byteArray = new Uint8Array(byteArrays);
-      return new Blob([byteArray], { type: contentType });
-    }
-    return file;
   };
 
   const removeFileHandler = (
@@ -59,8 +49,6 @@ const ImageInput = ({ name, label, id }: IImageInput) => {
     <>
       <Field name={name}>
         {(props: FieldProps) => {
-          const { meta, field } = props;
-
           if (props.field.value.url) {
             return (
               <div className="addedImg">

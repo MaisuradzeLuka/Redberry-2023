@@ -11,6 +11,7 @@ const BlogCard = ({
   description,
   image,
   publish_date,
+  id,
 }: IBlog) => {
   const descriptionLimit = (desc: string) => {
     if (desc.length > 73) {
@@ -45,7 +46,7 @@ const BlogCard = ({
           ))}
         </ul>
         <p>{descriptionLimit(description)}</p>
-        <Link to="/blog">
+        <Link to={`/blog/${id}`}>
           <button>
             სრულად ნახვა <MdArrowOutward />
           </button>

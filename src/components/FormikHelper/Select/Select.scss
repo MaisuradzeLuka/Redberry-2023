@@ -75,7 +75,6 @@
   .select__category,
   label {
     text-wrap: nowrap;
-    width: fit-content;
     padding: 8px 12px;
     border-radius: 30px;
     font-weight: 400;
@@ -83,7 +82,22 @@
   }
 
   .select__category {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
     font-size: 14px;
     padding: 6px 10px;
+    cursor: default;
+
+    svg {
+      width: 25px;
+      height: 25px;
+
+      border: none;
+      background-color: transparent;
+
+      cursor: pointer;
+    }
   }
 }

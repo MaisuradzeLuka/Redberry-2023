@@ -16,7 +16,14 @@ const Home = () => {
   const [categories, setCategories] = useState<ICategories[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
   const [blogs, setBlogs] = useState<IBlog[]>([]);
-  const [filteredBlogs, setFilteredBlogs] = useState<IBlog[]>([]);
+
+  const filteredBlogs = blogs.filter((item) =>
+    selectedCategories.length
+      ? item.categories.some((category) =>
+          selectedCategories.includes(category.id)
+        ) && new Date(item.publish_date) <= new Date()
+      : new Date(item.publish_date) <= new Date()
+  );
 
   useEffect(() => {
     try {
@@ -40,7 +47,6 @@ const Home = () => {
         );
 
         setCategories(data);
-        setFilteredBlogs(data);
       })();
     } catch (error) {
       throw new Error(`Something went wrong ${error}`);
@@ -51,14 +57,6 @@ const Home = () => {
     setSelectedCategories((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
-
-    const filteredBlogs = blogs.filter((item) =>
-      item.categories.some((category) =>
-        selectedCategories.includes(category.id)
-      )
-    );
-
-    console.log(filteredBlogs);
   };
 
   return (
@@ -89,7 +87,7 @@ const Home = () => {
           ))}
         </ul>
         <div className="home__section__blogs">
-          {blogs.map((item) => (
+          {filteredBlogs.map((item) => (
             <BlogCard key={item.id} {...item} />
           ))}
         </div>

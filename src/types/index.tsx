@@ -3,7 +3,7 @@ export interface IInitialValues {
   title: string;
   desc: string;
   releaseDate: Blob | string;
-  categories: number[];
+  categories: ICategories[];
   email: string;
   image: { name: string; url: string };
 }
@@ -34,4 +34,5 @@ export interface IBlog {
   image: string;
   publish_date: string;
   title: string;
+  email?: string;
 }

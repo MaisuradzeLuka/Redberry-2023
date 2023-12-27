@@ -1,5 +1,6 @@
-import { Field, FieldProps } from "formik";
+import { Field, useField } from "formik";
 import { IoIosInformationCircle } from "react-icons/io";
+import { useEffect } from "react";
 import "./Date.scss";
 
 interface IDate {
@@ -10,19 +11,25 @@ interface IDate {
 }
 
 const Date = ({ id, name, label, placeholder }: IDate) => {
+  const [field, meta] = useField(name);
+
+  useEffect(() => {
+    sessionStorage.setItem(name, field.value);
+  }, [field.value, name]);
+
+  const hasError = meta.error && meta.touched;
+
   return (
     <div className="date">
       <label htmlFor={id}>{label}</label>
       <Field name={name}>
-        {(props: FieldProps) => {
-          const { field, meta } = props;
-
+        {() => {
           return (
             <div
               className={`${
-                meta.error && meta.touched
+                hasError
                   ? "dateWrapper--invalid"
-                  : meta.touched
+                  : field.value !== ""
                   ? "dateWrapper--valid"
                   : ""
               }`}

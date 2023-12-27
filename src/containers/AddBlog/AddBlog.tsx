@@ -8,13 +8,13 @@ import { postWithToken } from "../../utils/fetchData";
 import "./AddBlog.scss";
 
 const initialValues: IInitialValues = {
-  author: "",
-  title: "",
-  desc: "",
-  releaseDate: "",
-  categories: [],
-  email: "",
-  image: { name: "", url: "" },
+  author: sessionStorage.getItem("author") || "",
+  title: sessionStorage.getItem("title") || "",
+  desc: sessionStorage.getItem("desc") || "",
+  releaseDate: sessionStorage.getItem("releaseDate") || "",
+  categories: JSON.parse(sessionStorage.getItem("categories")!) || [],
+  email: sessionStorage.getItem("email") || "",
+  image: JSON.parse(sessionStorage.getItem("image")!) || { name: "", url: "" },
 };
 
 const AddBlog = () => {
@@ -23,7 +23,10 @@ const AddBlog = () => {
     releaseDate: Yup.date().required("გამოქვეყნების თარიღი სავალდებულოა"),
     title: Yup.string().required().min(2),
     desc: Yup.string().required().min(2),
-    image: Yup.mixed().required(),
+    image: Yup.object().shape({
+      name: Yup.string().required("Image name is required"),
+      url: Yup.mixed().required("Image URL is required"),
+    }),
     email: Yup.string().test(
       "is-valid-email",
       "მეილი უნდა მთავრდებოდეს @redberry.ge-ით",
@@ -45,14 +48,38 @@ const AddBlog = () => {
   ) => {
     postBlog(values);
 
-    resetForm();
+    // resetForm();
+  };
+
+  const convertImageToBlob = (image: string) => {
+    const blob = dataUrlToBlob(image);
+    const file = new File([blob], "myFileName", { type: "image/png" });
+    function dataUrlToBlob(image: string) {
+      const parts = image.split(";base64,");
+      const contentType = parts[0].split(":")[1];
+      const byteCharacters = atob(parts[1]);
+      const byteArrays = [];
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteArrays.push(byteCharacters.charCodeAt(i));
+      }
+      const byteArray = new Uint8Array(byteArrays);
+      return new Blob([byteArray], { type: contentType });
+    }
+    return file;
   };
 
   const postBlog = async (values: IInitialValues) => {
+    const categoryIds = values.categories.map((item) => item.id);
+
+    console.log(values.categories);
+
     const formData = new FormData();
     formData.append("title", values.title);
     formData.append("description", values.desc);
-    formData.append("image", values.image.url);
+
+    const imageFile = convertImageToBlob(values.image.url);
+
+    formData.append("image", imageFile);
 
     formData.append("publish_date", values.releaseDate);
     formData.append("author", values.author);
@@ -79,7 +106,7 @@ const AddBlog = () => {
       validationSchema={validationSchema}
     >
       {(props) => {
-        console.log(props.values);
+        // console.log(props);
 
         return (
           <Form className="addBlog">
@@ -146,7 +173,7 @@ const AddBlog = () => {
             <Button
               type="submit"
               className="addBlog__submitBtn"
-              dissabled={false}
+              dissabled={!props.dirty || !props.isValid}
             >
               ბლოგის დამატება
             </Button>

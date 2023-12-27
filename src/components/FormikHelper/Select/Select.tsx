@@ -2,7 +2,7 @@ import { useField } from "formik";
 import { useEffect, useState } from "react";
 import { fetchData } from "../../../utils/fetchData";
 import { ICategories } from "../../../types";
-import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowDown, IoIosClose } from "react-icons/io";
 import "./Select.scss";
 
 interface ISelect {
@@ -16,8 +16,12 @@ const Select = ({ name, label, setFieldValue }: ISelect) => {
   const [showOptions, setShowOptions] = useState(false);
   const [categories, setCategories] = useState<ICategories[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<ICategories[]>(
-    []
+    JSON.parse(sessionStorage.getItem("categories")!) || []
   );
+
+  useEffect(() => {
+    sessionStorage.setItem(name, JSON.stringify(selectedCategories));
+  }, [selectedCategories, name]);
 
   const handleCategories = (category: ICategories) => {
     const exists = selectedCategories.some(
@@ -38,6 +42,19 @@ const Select = ({ name, label, setFieldValue }: ISelect) => {
 
   const handleOptions = () => {
     setShowOptions((prev) => !prev);
+  };
+
+  const handleRemoveCategory = (id: number) => {
+    const filteredCategories = selectedCategories.filter(
+      (item) => item.id !== id
+    );
+
+    setSelectedCategories(filteredCategories);
+
+    setFieldValue(
+      name,
+      field.value.filter((item: number) => item !== id)
+    );
   };
 
   useEffect(() => {
@@ -70,6 +87,7 @@ const Select = ({ name, label, setFieldValue }: ISelect) => {
                 className="select__category"
               >
                 {item.title}
+                <IoIosClose onClick={() => handleRemoveCategory(item.id)} />
               </div>
             ))}
         <div className="select__btnWrapper">

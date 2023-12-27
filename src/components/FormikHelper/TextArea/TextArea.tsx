@@ -1,5 +1,6 @@
-import { Field, FieldProps } from "formik";
+import { Field, useField } from "formik";
 import { IoIosInformationCircle } from "react-icons/io";
+import { useEffect } from "react";
 import "./TextArea.scss";
 
 interface IDate {
@@ -11,19 +12,27 @@ interface IDate {
 }
 
 const TextArea = ({ id, name, label, placeholder, info }: IDate) => {
+  const [field, meta] = useField(name);
+
+  useEffect(() => {
+    sessionStorage.setItem(name, field.value);
+  }, [field.value, name]);
+
+  const hasError =
+    (meta.touched && meta.error) ||
+    (field.value.length > 0 && field.value.length < 2);
+
   return (
     <div className="textArea">
       <label htmlFor={id}>{label}</label>
       <Field name={name}>
-        {(props: FieldProps) => {
-          const { field, meta } = props;
-
+        {() => {
           return (
             <div
               className={`${
-                meta.error && meta.touched
+                hasError
                   ? "textAreaWrapper--invalid"
-                  : meta.touched
+                  : field.value.length >= 2
                   ? "textAreaWrapper--valid"
                   : ""
               }`}
