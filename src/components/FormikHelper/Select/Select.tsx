@@ -35,8 +35,8 @@ const Select = ({ name, label, setFieldValue }: ISelect) => {
       ]);
     }
 
-    if (!field.value.includes(category.id)) {
-      setFieldValue(name, [...field.value, category.id]);
+    if (!field.value.includes(category)) {
+      setFieldValue(name, [...field.value, category]);
     }
   };
 
@@ -53,7 +53,7 @@ const Select = ({ name, label, setFieldValue }: ISelect) => {
 
     setFieldValue(
       name,
-      field.value.filter((item: number) => item !== id)
+      field.value.filter((item: ICategories) => item.id !== id)
     );
   };
 

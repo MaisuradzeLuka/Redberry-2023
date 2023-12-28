@@ -26,13 +26,27 @@
   flex-direction: column;
   align-items: center;
 
+  gap: 32px;
+
   .categories {
+    width: 50%;
+
+    overflow-x: scroll;
+
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 25px;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    & {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
 
     button {
+      text-wrap: nowrap;
       border: 1px solid transparent;
       background-color: transparent;
       cursor: pointer;

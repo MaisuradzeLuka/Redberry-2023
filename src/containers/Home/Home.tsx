@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { fetchData, fetchWithToken } from "../../utils/fetchData";
 import { BlogCard } from "../../components";
 import { IBlog } from "../../types";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
 import "./Home.scss";
 
 interface ICategories {
@@ -68,24 +70,32 @@ const Home = () => {
         </div>
       </header>
       <section className="home__section">
-        <ul className="categories">
+        <Swiper
+          mousewheel
+          direction="horizontal"
+          pagination={false}
+          className="categories"
+          spaceBetween={18}
+          slidesPerView={"auto"}
+        >
           {categories.map((item) => (
-            <button
-              onClick={() => handleCategories(item.id)}
-              key={item.id}
-              className={selectedCategories.includes(item.id) ? "active" : ""}
-            >
-              <li
-                style={{
-                  color: item.text_color,
-                  background: item.background_color,
-                }}
+            <SwiperSlide key={item.id} style={{ width: "auto" }}>
+              <button
+                onClick={() => handleCategories(item.id)}
+                className={selectedCategories.includes(item.id) ? "active" : ""}
               >
-                {item.title}
-              </li>
-            </button>
+                <li
+                  style={{
+                    color: item.text_color,
+                    background: item.background_color,
+                  }}
+                >
+                  {item.title}
+                </li>
+              </button>
+            </SwiperSlide>
           ))}
-        </ul>
+        </Swiper>
         <div className="home__section__blogs">
           {filteredBlogs.map((item) => (
             <BlogCard key={item.id} {...item} />

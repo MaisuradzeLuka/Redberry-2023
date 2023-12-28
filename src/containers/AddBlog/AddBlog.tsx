@@ -71,8 +71,6 @@ const AddBlog = () => {
   const postBlog = async (values: IInitialValues) => {
     const categoryIds = values.categories.map((item) => item.id);
 
-    console.log(values.categories);
-
     const formData = new FormData();
     formData.append("title", values.title);
     formData.append("description", values.desc);
@@ -84,9 +82,9 @@ const AddBlog = () => {
     formData.append("publish_date", values.releaseDate);
     formData.append("author", values.author);
 
-    formData.append("categories", JSON.stringify([...values.categories]));
+    formData.append("categories", JSON.stringify([...categoryIds]));
 
-    formData.append("email", values.email);
+    values.email && formData.append("email", values.email);
 
     try {
       await postWithToken(
@@ -104,9 +102,12 @@ const AddBlog = () => {
       onSubmit={onSubmit}
       initialValues={initialValues}
       validationSchema={validationSchema}
+      validateOnMount
     >
       {(props) => {
-        // console.log(props);
+        const isValid = props.isValid && props.values.categories.length > 0;
+
+        console.log(props.values.categories);
 
         return (
           <Form className="addBlog">
@@ -173,7 +174,7 @@ const AddBlog = () => {
             <Button
               type="submit"
               className="addBlog__submitBtn"
-              dissabled={!props.dirty || !props.isValid}
+              dissabled={!isValid || props.isSubmitting}
             >
               ბლოგის დამატება
             </Button>

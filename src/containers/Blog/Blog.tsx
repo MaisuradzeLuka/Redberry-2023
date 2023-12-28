@@ -8,6 +8,8 @@ import { BlogCard } from "../../components";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "./Blog.scss";
 import "swiper/css";
+import { Navigation } from "swiper/modules";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 const initialBlogState: IBlog = {
   author: "",
@@ -61,9 +63,19 @@ const Blog = () => {
     }
   }, []);
 
+  const blogCategoriesIds = blog.categories.map((item) => item.id);
+  const filteredBlogs = blogs.filter(
+    (item) =>
+      item.categories.some((category) =>
+        blogCategoriesIds.includes(category.id)
+      ) &&
+      new Date(item.publish_date) <= new Date() &&
+      blog.id !== item.id
+  );
+
   return (
     <div className="individualBlog">
-      <section>
+      <section className="individualBlog__blogSection">
         <article className="blogArticle">
           {blog.image && <img src={blog.image} alt="blog_image" />}
           <div className="blogArticle__publisher">
@@ -90,28 +102,45 @@ const Blog = () => {
           <p className="blogArticle__description">{blog.description}</p>
         </article>
       </section>
-      <section className="similarBlogs">
-        <header>
-          <h2>მსგავსი სტატიები</h2>
-          <div>
-            <button></button>
-            <button></button>
-          </div>
-        </header>
-        <Swiper
-          className="similarBlogs__blogs"
-          mousewheel
-          direction="horizontal"
-          slidesPerView={3}
-        >
-          {blogs.map((item) => (
-            <SwiperSlide key={item.id}>
-              text
-              {/* <BlogCard {...item} /> */}
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </section>
+      {filteredBlogs.length ? (
+        <section className="similarBlogs">
+          <header>
+            <h2>მსგავსი სტატიები</h2>
+            <div>
+              <button className="swiperBtn image-swiper-button-prev">
+                <IoIosArrowBack />
+              </button>
+              <button className="swiperBtn image-swiper-button-next">
+                <IoIosArrowForward />
+              </button>
+            </div>
+          </header>
+
+          <Swiper
+            className="similarBlogs__blogs"
+            mousewheel
+            direction="horizontal"
+            pagination={false}
+            spaceBetween={32}
+            slidesPerView={3}
+            navigation={{
+              nextEl: ".image-swiper-button-next",
+              prevEl: ".image-swiper-button-prev",
+              disabledClass: "swiper-button-disabled",
+            }}
+            modules={[Navigation]}
+          >
+            {filteredBlogs.map((item) => (
+              <SwiperSlide key={item.id}>
+                <BlogCard {...item} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </section>
+      ) : (
+        ""
+      )}
+
       <Link to="/">
         <button type="button" className="individualBlog__backBtn">
           <FaChevronLeft />

@@ -1,5 +1,6 @@
 .individualBlog {
   width: 100%;
+  min-height: 100vh;
   background-color: rgb(243, 242, 250);
   position: relative;
 
@@ -9,6 +10,10 @@
   gap: 100px;
 
   padding-top: 100px;
+
+  &__blogSection {
+    width: 100%;
+  }
 
   &__backBtn {
     position: absolute;
@@ -92,18 +97,43 @@
 
   width: 1288px;
 
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    div {
+      display: flex;
+      gap: 8px;
+    }
+
+    .swiperBtn {
+      width: 44px;
+      height: 44px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background-color: rgba(93, 55, 243, 1);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .swiper-button-disabled {
+      pointer-events: none;
+      background-color: rgba(228, 227, 235, 1);
+    }
+  }
+
   h2 {
     font-weight: bold;
     font-size: 32px;
   }
 
   &__blogs {
-    // display: flex;
-    gap: 32px;
-    // overflow-x: scroll;
-
-    img {
-      width: auto;
-    }
+    width: 100%;
   }
 }
