@@ -8,12 +8,13 @@ import "./Select.scss";
 interface ISelect {
   name: string;
   label: string;
-  setFieldValue: (field: string, value: number[]) => void;
+  setFieldValue?: (field: string, value: number[]) => void;
 }
 
 const Select = ({ name, label, setFieldValue }: ISelect) => {
   const [field] = useField(name);
   const [showOptions, setShowOptions] = useState(false);
+  const [touched, setTouched] = useState(false);
   const [categories, setCategories] = useState<ICategories[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<ICategories[]>(
     JSON.parse(sessionStorage.getItem("categories")!) || []
@@ -36,7 +37,7 @@ const Select = ({ name, label, setFieldValue }: ISelect) => {
     }
 
     if (!field.value.includes(category)) {
-      setFieldValue(name, [...field.value, category]);
+      setFieldValue!(name, [...field.value, category]);
     }
   };
 
@@ -51,10 +52,11 @@ const Select = ({ name, label, setFieldValue }: ISelect) => {
 
     setSelectedCategories(filteredCategories);
 
-    setFieldValue(
+    setFieldValue!(
       name,
       field.value.filter((item: ICategories) => item.id !== id)
     );
+    setTouched(true);
   };
 
   useEffect(() => {
@@ -71,13 +73,24 @@ const Select = ({ name, label, setFieldValue }: ISelect) => {
     }
   }, []);
 
+  const hasError = field.value.length <= 0 && touched;
+
   return (
     <div className="selectWrapper">
       <h3>{label}</h3>
-      <div className="select" onClick={handleOptions}>
+      <div
+        className={
+          hasError
+            ? "select select-invalid"
+            : field.value.length > 0
+            ? "select select-valid"
+            : "select"
+        }
+        onClick={handleOptions}
+      >
         {selectedCategories.length === 0
           ? "შეიყვნეთ სათაური"
-          : selectedCategories.map((item) => (
+          : field.value.map((item: ICategories) => (
               <div
                 key={`selected_category_${item.id}`}
                 style={{
@@ -90,7 +103,12 @@ const Select = ({ name, label, setFieldValue }: ISelect) => {
                 <IoIosClose onClick={() => handleRemoveCategory(item.id)} />
               </div>
             ))}
-        <div className="select__btnWrapper">
+        <div
+          className="select__btnWrapper"
+          style={{
+            backgroundColor: `${hasError ? "rgba(250, 242, 243, 1)" : ""}`,
+          }}
+        >
           <IoIosArrowDown />
         </div>
       </div>

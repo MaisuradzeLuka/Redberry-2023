@@ -52,3 +52,21 @@ export const postWithToken = async (url: string, formData: BodyInit) => {
     throw new Error(`Something went wrong: ${error}`);
   }
 };
+
+export const postUserLogin = async (value: string) => {
+  try {
+    const token =
+      "6b22c113dd70cb3441b340fd44abf353f5bbc182a86d5a4f0344afc84c936b7e";
+
+    return await fetch("https://api.blog.redberryinternship.ge/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ email: value }),
+    });
+  } catch (error) {
+    throw new Error(`Something went wrong: ${error}`);
+  }
+};

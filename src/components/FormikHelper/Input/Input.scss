@@ -20,7 +20,7 @@
     border: 1px solid rgba(228, 227, 235, 1);
   }
 
-  p {
+  .infoWrapper {
     display: flex;
     gap: 6px;
 
@@ -41,8 +41,12 @@
       background-color: rgba(250, 242, 243, 1);
     }
 
-    p {
+    .infoWrapper--invalid {
       color: rgba(234, 25, 25, 1);
+    }
+
+    .infoWrapper--valid {
+      color: rgba(20, 216, 28, 1);
     }
   }
 

@@ -4,7 +4,7 @@ import { IoMdClose } from "react-icons/io";
 import { MdError } from "react-icons/md";
 import { FaCircleCheck } from "react-icons/fa6";
 
-import { fetchData } from "../../utils/fetchData";
+import { postUserLogin } from "../../utils/fetchData";
 import "./UserLogin.scss";
 
 interface IUserLogin {
@@ -25,18 +25,10 @@ const UserLogin = ({
     setValue(e.target.value);
   };
 
-  const loginUser = async (token: string) => {
-    const response = await fetch(
-      "https://api.blog.redberryinternship.ge/api/login",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ email: value }),
-      }
-    );
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const response = await postUserLogin(value);
 
     setTouched(true);
 
@@ -44,19 +36,6 @@ const UserLogin = ({
       handleLoggedChange();
     } else {
       throw new Error("Network response was not ok");
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    try {
-      const { token } = await fetchData(
-        "https://api.blog.redberryinternship.ge/api/token"
-      );
-      await loginUser(token);
-    } catch (error) {
-      throw new Error(`Something went wrong: ${error}`);
     }
   };
 

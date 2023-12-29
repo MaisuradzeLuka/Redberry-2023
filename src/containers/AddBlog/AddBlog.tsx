@@ -1,10 +1,11 @@
+import { useState } from "react";
 import { FaChevronLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { Formik, Form, FormikHelpers } from "formik";
-import { Button, FormikHelper } from "../../components";
-import * as Yup from "yup";
+import { Button, FormikHelper, SuccessModal } from "../../components";
 import { IInitialValues } from "../../types";
 import { postWithToken } from "../../utils/fetchData";
+import { validationSchema } from "../../components/FormikHelper/validationSchema";
 import "./AddBlog.scss";
 
 const initialValues: IInitialValues = {
@@ -18,37 +19,24 @@ const initialValues: IInitialValues = {
 };
 
 const AddBlog = () => {
-  const validationSchema = Yup.object({
-    author: Yup.string().required("Skill is required field"),
-    releaseDate: Yup.date().required("გამოქვეყნების თარიღი სავალდებულოა"),
-    title: Yup.string().required().min(2),
-    desc: Yup.string().required().min(2),
-    image: Yup.object().shape({
-      name: Yup.string().required("Image name is required"),
-      url: Yup.mixed().required("Image URL is required"),
-    }),
-    email: Yup.string().test(
-      "is-valid-email",
-      "მეილი უნდა მთავრდებოდეს @redberry.ge-ით",
-      function (value) {
-        if (!value) {
-          return true;
-        }
-        return Yup.string()
-          .email()
-          .matches(/@redberry\.ge$/)
-          .isValidSync(value);
-      }
-    ),
-  });
+  const [showModal, setShowModal] = useState(true);
 
-  const onSubmit = (
+  const handleShowModal = (value: boolean) => {
+    setShowModal(value);
+  };
+
+  const onSubmit = async (
     values: IInitialValues,
     { resetForm }: FormikHelpers<IInitialValues>
   ) => {
-    postBlog(values);
+    const res = await postBlog(values);
 
-    // resetForm();
+    if (res) {
+      resetForm();
+      sessionStorage.clear();
+      sessionStorage.setItem("loggedin", JSON.stringify(true));
+      handleShowModal(true);
+    }
   };
 
   const convertImageToBlob = (image: string) => {
@@ -87,10 +75,14 @@ const AddBlog = () => {
     values.email && formData.append("email", values.email);
 
     try {
-      await postWithToken(
+      const response = await postWithToken(
         "https://api.blog.redberryinternship.ge/api/blogs",
         formData
       );
+
+      if (response.status === 204) {
+        return true;
+      }
     } catch (error) {
       console.error("Could not create blog", error);
       return false;
@@ -107,84 +99,90 @@ const AddBlog = () => {
       {(props) => {
         const isValid = props.isValid && props.values.categories.length > 0;
 
-        console.log(props.values.categories);
-
         return (
-          <Form className="addBlog">
-            <h2>ბლოგის დამატება</h2>
+          <>
+            <Form className="addBlog" autoComplete="off">
+              <h2>ბლოგის დამატება</h2>
 
-            <FormikHelper
-              control="image"
-              name="image"
-              id="image"
-              label="ატვირთეთ ფოტო"
-            />
-
-            <div className="addBlog__inputWrapper">
               <FormikHelper
-                control="input"
-                id="author"
-                name="author"
-                label="ავტორი*"
-                placeholder="შეიყვნეთ ავტორი"
+                control="image"
+                name="image"
+                id="image"
+                label="ატვირთეთ ფოტო*"
               />
+
+              <div className="addBlog__inputWrapper">
+                <FormikHelper
+                  control="input"
+                  id="author"
+                  name="author"
+                  label="ავტორი*"
+                  placeholder="შეიყვნეთ ავტორი"
+                  info={[
+                    "მინიმუმ 4 სიმბოლო",
+                    "მინიმუმ ორი სიტყვა",
+                    " მხოლოდ ქართული სიმბოლოები",
+                  ]}
+                />
+                <FormikHelper
+                  control="input"
+                  id="title"
+                  name="title"
+                  label="სათაური*"
+                  placeholder="შეიყვნეთ სათაური"
+                  info={"მინიმუმ 2 სიმბოლო"}
+                />
+              </div>
+
               <FormikHelper
-                control="input"
-                id="title"
-                name="title"
-                label="სათაური*"
-                placeholder="შეიყვნეთ სათაური"
+                control="textarea"
+                name="desc"
+                id="desc"
+                label="აღწერა*"
+                placeholder="შეიყვნეთ აღწერა"
                 info={"მინიმუმ 2 სიმბოლო"}
               />
-            </div>
 
-            <FormikHelper
-              control="textarea"
-              name="desc"
-              id="desc"
-              label="აღწერა*"
-              placeholder="შეიყვნეთ აღწერა"
-              info={"მინიმუმ 2 სიმბოლო"}
-            />
+              <div className="addBlog__inputWrapper">
+                <FormikHelper
+                  control="date"
+                  id="releaseDate"
+                  name="releaseDate"
+                  label="გამოქვეყნების თარიღი*"
+                />
+                <FormikHelper
+                  control="select"
+                  id="categories"
+                  name="categories"
+                  label="კატეგორია*"
+                  setFieldValue={props.setFieldValue}
+                />
+              </div>
 
-            <div className="addBlog__inputWrapper">
               <FormikHelper
-                control="date"
-                id="releaseDate"
-                name="releaseDate"
-                label="გამოქვეყნების თარიღი*"
+                control="input"
+                id="email"
+                name="email"
+                label="ელ-ფოსტა"
+                placeholder="Example@redberry.ge"
               />
-              <FormikHelper
-                control="select"
-                id="categories"
-                name="categories"
-                label="კატეგორია"
-                setFieldValue={props.setFieldValue}
-              />
-            </div>
 
-            <FormikHelper
-              control="input"
-              id="email"
-              name="email"
-              label="ელ-ფოსტა"
-              placeholder="Example@redberry.ge"
-            />
+              <Button
+                type="submit"
+                className="addBlog__submitBtn"
+                dissabled={!isValid || props.isSubmitting}
+              >
+                ბლოგის დამატება
+              </Button>
 
-            <Button
-              type="submit"
-              className="addBlog__submitBtn"
-              dissabled={!isValid || props.isSubmitting}
-            >
-              ბლოგის დამატება
-            </Button>
-
-            <Link to="/">
-              <button type="button" className="addBlog__backBtn">
-                <FaChevronLeft />
-              </button>
-            </Link>
-          </Form>
+              <Link to="/">
+                <button type="button" className="addBlog__backBtn">
+                  <FaChevronLeft />
+                </button>
+              </Link>
+            </Form>
+            {showModal && <SuccessModal handleShowModal={handleShowModal} />}
+          </>
         );
       }}
     </Formik>

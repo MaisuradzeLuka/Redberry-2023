@@ -47,6 +47,15 @@
         cursor: pointer;
       }
     }
+
+    &-invalid {
+      border-color: rgba(234, 25, 25, 1);
+      background-color: rgba(250, 242, 243, 1);
+    }
+
+    &-valid {
+      border-color: rgba(20, 216, 28, 1);
+    }
   }
 
   .select__options {

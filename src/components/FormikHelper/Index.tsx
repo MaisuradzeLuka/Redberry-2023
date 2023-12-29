@@ -11,7 +11,7 @@ interface IFormControlProps {
   id: string;
   placeholder?: string;
   info?: string[] | string;
-  setFieldValue?: (field: string, value: string) => void;
+  setFieldValue?: (field: string, value: number[]) => void;
 }
 
 const FormikHelper = (props: IFormControlProps) => {
