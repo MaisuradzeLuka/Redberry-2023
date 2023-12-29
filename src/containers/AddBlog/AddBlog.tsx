@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaChevronLeft } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { Formik, Form, FormikHelpers } from "formik";
 import { Button, FormikHelper, SuccessModal } from "../../components";
 import { IInitialValues } from "../../types";
@@ -19,7 +19,13 @@ const initialValues: IInitialValues = {
 };
 
 const AddBlog = () => {
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+
+  const userLoggedIn = Boolean(sessionStorage.getItem("loggedin"));
+
+  if (!userLoggedIn) {
+    return <Navigate to="/" />;
+  }
 
   const handleShowModal = (value: boolean) => {
     setShowModal(value);

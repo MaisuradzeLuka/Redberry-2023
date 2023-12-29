@@ -21,7 +21,7 @@ export const fetchData = async (url: string, header?: IFetchData) => {
 export const fetchWithToken = async (url: string) => {
   try {
     const token =
-      "6b22c113dd70cb3441b340fd44abf353f5bbc182a86d5a4f0344afc84c936b7e";
+      "45f5498f5a9704a4a74ceb421678882a4bc1ee31f44056cb7da2732705bd6df4";
 
     return fetchData(url, {
       method: "GET",
@@ -38,7 +38,7 @@ export const fetchWithToken = async (url: string) => {
 export const postWithToken = async (url: string, formData: BodyInit) => {
   try {
     const token =
-      "6b22c113dd70cb3441b340fd44abf353f5bbc182a86d5a4f0344afc84c936b7e";
+      "45f5498f5a9704a4a74ceb421678882a4bc1ee31f44056cb7da2732705bd6df4";
 
     return await fetch(url, {
       method: "POST",
@@ -56,7 +56,7 @@ export const postWithToken = async (url: string, formData: BodyInit) => {
 export const postUserLogin = async (value: string) => {
   try {
     const token =
-      "6b22c113dd70cb3441b340fd44abf353f5bbc182a86d5a4f0344afc84c936b7e";
+      "45f5498f5a9704a4a74ceb421678882a4bc1ee31f44056cb7da2732705bd6df4";
 
     return await fetch("https://api.blog.redberryinternship.ge/api/login", {
       method: "POST",

@@ -16,7 +16,9 @@ interface ICategories {
 
 const Home = () => {
   const [categories, setCategories] = useState<ICategories[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<number[]>(
+    JSON.parse(sessionStorage.getItem("categories")!) || []
+  );
   const [blogs, setBlogs] = useState<IBlog[]>([]);
 
   const filteredBlogs = blogs.filter((item) =>
@@ -54,6 +56,10 @@ const Home = () => {
       throw new Error(`Something went wrong ${error}`);
     }
   }, []);
+
+  useEffect(() => {
+    sessionStorage.setItem("categories", JSON.stringify(selectedCategories));
+  }, [selectedCategories]);
 
   const handleCategories = (id: number) => {
     setSelectedCategories((prev) =>

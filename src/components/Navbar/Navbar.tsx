@@ -1,42 +1,38 @@
 import { Button } from "../";
 import { IUserLogin } from "../../types";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import logo from "../../assets/LOGO.png";
 
 import "./Navbar.scss";
 
-const Navbar = ({
-  loggedIn,
-  handleShowModal,
-  handleLoggedChange,
-}: IUserLogin) => {
+const Navbar = ({ loggedIn, handleShowModal }: IUserLogin) => {
+  const { pathname } = useLocation();
+
+  console.log(pathname);
+
   return (
-    <nav className="navBar">
+    <nav
+      className={`${pathname !== "/addBlog" ? "navBar" : "navBar addBlogNav"}`}
+    >
       <Link to="/">
         <img src={logo} alt="logo" />
       </Link>
-      <div>
-        {loggedIn ? (
-          <div className="navBar__btnWrapper">
-            <Link to="addBlog">
-              <Button type="button">დაამატე ბლოგი</Button>
-            </Link>
-            <Link to="/">
-              <Button
-                type="button"
-                onClick={handleLoggedChange}
-                className="logout"
-              >
-                გამოსვლა
-              </Button>
-            </Link>
-          </div>
-        ) : (
-          <Button type="button" onClick={handleShowModal}>
-            შესვლა
-          </Button>
-        )}
-      </div>
+      {pathname !== "/addBlog" && (
+        <div>
+          {loggedIn ? (
+            <div className="navBar__btnWrapper">
+              <Link to="addBlog">
+                <Button type="button">დაამატე ბლოგი</Button>
+              </Link>
+              <Link to="/"></Link>
+            </div>
+          ) : (
+            <Button type="button" onClick={handleShowModal}>
+              შესვლა
+            </Button>
+          )}
+        </div>
+      )}
     </nav>
   );
 };
