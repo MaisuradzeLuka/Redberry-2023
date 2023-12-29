@@ -88,21 +88,23 @@ const Select = ({ name, label, setFieldValue }: ISelect) => {
         }
         onClick={handleOptions}
       >
-        {selectedCategories.length === 0
-          ? "შეიყვნეთ სათაური"
-          : field.value.map((item: ICategories) => (
-              <div
-                key={`selected_category_${item.id}`}
-                style={{
-                  backgroundColor: item.background_color,
-                  color: item.text_color,
-                }}
-                className="select__category"
-              >
-                {item.title}
-                <IoIosClose onClick={() => handleRemoveCategory(item.id)} />
-              </div>
-            ))}
+        <div className="select__categoryWrapper">
+          {selectedCategories.length === 0
+            ? "შეიყვნეთ სათაური"
+            : field.value.map((item: ICategories) => (
+                <div
+                  key={`selected_category_${item.id}`}
+                  style={{
+                    backgroundColor: item.background_color,
+                    color: item.text_color,
+                  }}
+                  className="select__category"
+                >
+                  {item.title}
+                  <IoIosClose onClick={() => handleRemoveCategory(item.id)} />
+                </div>
+              ))}
+        </div>
         <div
           className="select__btnWrapper"
           style={{
